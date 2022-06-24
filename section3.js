@@ -11,8 +11,14 @@ document.body.appendChild( renderer.domElement );
 camera.position.z = 10;
 
 //--------------------------- Lights ---------------------------
-const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 );
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
 scene.add( directionalLight );
+
+const targetObject = new THREE.Object3D();
+targetObject.position.set(0,-1,-5);
+scene.add(targetObject);
+
+directionalLight.target = targetObject;
 
 const light = new THREE.AmbientLight( 0x404040 );
 scene.add( light );
@@ -29,6 +35,21 @@ const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
 
 //Collectable 
+const collectGeometry = new THREE.OctahedronGeometry(0.4, 1);
+const collectMaterial = new THREE.MeshLambertMaterial({color: 0xFFFF00})
+collectMaterial.emissive = new THREE.Color(0x222222);
+
+let collectOne = new THREE.Mesh(collectGeometry, collectMaterial);
+collectOne.position.set(2,0,0);
+scene.add(collectOne);
+
+let collectTwo = new THREE.Mesh(collectGeometry, collectMaterial);
+collectTwo.position.set(2,2,0);
+scene.add(collectTwo);
+
+let collectThree = new THREE.Mesh(collectGeometry, collectMaterial);
+collectThree.position.set(2,-2,0);
+scene.add(collectThree);
 
 //--------------------------- Controls ---------------------------
 //Player
@@ -75,10 +96,17 @@ function animate() {
     cube.position.y += ySpeed*yVelocity;
 
     //Rotation
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    Rotate(cube);
+    Rotate(collectOne);
+    Rotate(collectTwo);
+    Rotate(collectThree);
 
     renderer.render( scene, camera );
 };
+
+function Rotate(obj){
+    obj.rotation.x += 0.01;
+    obj.rotation.y += 0.01;
+}
 
 animate();
